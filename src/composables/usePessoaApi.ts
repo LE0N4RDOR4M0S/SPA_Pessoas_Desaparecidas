@@ -9,17 +9,29 @@ export function usePeopleApi() {
   const error: Ref<string | null> = ref(null)
 
   const currentPage = ref(0)
-  const perPage = ref(10)
+  const perPage = ref(12)
 
   const fetchPeople = async (
     page = currentPage.value,
     size = perPage.value,
     filters: Record<string, any> = {},
+    faixaIdadeInicial: number = 0,
+    faixaIdadeFinal: number = 0,
+    sexo: string = ''
   ) => {
     isLoading.value = true
     error.value = null
     try {
-      const response = await peopleService.getPeople(page, size, filters)
+      const response = await peopleService.getPeople(
+        page,
+        size,
+        {
+          ...filters,
+          faixaIdadeInicial,
+          faixaIdadeFinal,
+          sexo,
+        }
+      )
       dados.value = response
       currentPage.value = page
       perPage.value = size
@@ -30,12 +42,24 @@ export function usePeopleApi() {
     }
   }
 
-  const changePage = async (newPage: number, filters: Record<string, any> = {}) => {
-    await fetchPeople(newPage, perPage.value, filters)
+  const changePage = async (
+    newPage: number,
+    filters: Record<string, any> = {},
+    faixaIdadeInicial: number = 0,
+    faixaIdadeFinal: number = 0,
+    sexo: string = ''
+  ) => {
+    await fetchPeople(newPage, perPage.value, filters, faixaIdadeInicial, faixaIdadeFinal, sexo)
   }
 
-  const changePerPage = async (newSize: number, filters: Record<string, any> = {}) => {
-    await fetchPeople(0, newSize, filters)
+  const changePerPage = async (
+    newSize: number,
+    filters: Record<string, any> = {},
+    faixaIdadeInicial: number = 0,
+    faixaIdadeFinal: number = 0,
+    sexo: string = ''
+  ) => {
+    await fetchPeople(0, newSize, filters, faixaIdadeInicial, faixaIdadeFinal, sexo)
   }
 
   return {

@@ -13,6 +13,9 @@ export interface SearchFilters {
   status?: string;
   cidade?: string;
   estado?: string;
+  faixaIdadeInicial?: number;
+  faixaIdadeFinal?: number;
+  sexo?: string;
 }
 
 export interface SubmissionFormData {
