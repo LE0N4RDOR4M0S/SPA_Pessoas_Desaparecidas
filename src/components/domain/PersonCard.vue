@@ -15,6 +15,7 @@ const props = defineProps<{
     <div class="relative">
       <img
         :src="person.urlFoto || '/imagem.png'"
+        @error="(e) => { e.target.src = '/imagem.png' }"
         :alt="`Foto de ${person.nome}`"
         class="w-full h-56 object-cover bg-neutral-200"
       />
