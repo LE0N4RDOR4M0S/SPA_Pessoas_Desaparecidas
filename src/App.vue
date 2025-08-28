@@ -1,11 +1,13 @@
-<script setup></script>
+<script setup lang="ts">
+import { RouterView } from 'vue-router'
+import TheHeader from '@/components/domain/TheHeader.vue'
+import HomePage from './views/HomePage.vue'
+</script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <div class="min-h-screen bg-neutral-100 font-sans text-neutral-800">
+    <TheHeader />
+    <HomePage />
+    <RouterView />
+  </div>
 </template>
-
-<style scoped></style>

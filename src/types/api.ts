@@ -1,0 +1,31 @@
+import type { Pessoa, StatusPessoa } from './pessoa.type';
+
+export interface PaginatedResponse<T> {
+  content: T[];
+  page: number;
+  size: number;
+  totalPages: number;
+  totalElements: number;
+}
+
+export interface SearchFilters {
+  nome?: string;
+  status?: string;
+  cidade?: string;
+  estado?: string;
+}
+
+export interface SubmissionFormData {
+  observacao: string;
+  localizacao?: string;
+  fotos?: File[];
+}
+
+export interface ApiPaginatedResponse {
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  content: Pessoa[];
+  number: number;
+}
+
