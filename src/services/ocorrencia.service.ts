@@ -16,4 +16,12 @@ export const ocorrenciaService = {
     )
     return response.data
   },
+  async addInformacaoDesaparecido(ocorrenciaId: number, informacao: string, anexos: string[]): Promise<OcorrenciaInfo> {
+    const response = await apiClient.post<OcorrenciaInfo>('/ocorrencias/informacoes-desaparecido', {
+      ocorrenciaId,
+      informacao,
+      anexos
+    })
+    return response.data
+  }
 }

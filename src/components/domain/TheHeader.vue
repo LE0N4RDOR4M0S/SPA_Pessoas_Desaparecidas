@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import { RouterLink, useRouter, useRoute } from 'vue-router'
-const router = useRouter()
+import { RouterLink, useRoute } from 'vue-router'
 const route = useRoute()
-function goBack() {
-  router.back()
-}
 </script>
 
 <template>
@@ -21,28 +17,13 @@ function goBack() {
           <p class="text-xs text-neutral-500">Pessoas Desaparecidas</p>
         </div>
       </RouterLink>
-      <div>
-        <button
-          v-if="route.path !== '/'"
-          @click="goBack"
-          class="flex items-center gap-2 px-3 py-1 rounded bg-neutral-100 hover:bg-neutral-200 text-neutral-700 border border-neutral-300 transition"
+      <div class="flex items-center gap-4">
+        <RouterLink to="/sobre" class="text-sm text-neutral-600 hover:text-primary-700 transition"
+          >Sobre</RouterLink
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-          Voltar
-        </button>
+        <RouterLink to="/contato" class="text-sm text-neutral-600 hover:text-primary-700 transition"
+          >Contato</RouterLink
+        >
       </div>
     </nav>
   </header>

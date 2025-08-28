@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col md:flex-row gap-6 items-center mb-6">
+  <div class="flex flex-col md:flex-row gap-6 items-center mb-6 relative">
     <img
       :src="pessoa.urlFoto || '/imagem.png'"
       :alt="`Foto de ${pessoa.nome}`"
