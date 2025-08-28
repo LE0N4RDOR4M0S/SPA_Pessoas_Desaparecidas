@@ -4,9 +4,10 @@ import type { Pessoa, PessoaComStatus, StatusPessoa } from '@/types/pessoa.type'
 import type { PaginatedResponse } from '@/types/api'
 
 function adicionarStatus(pessoa: Pessoa): PessoaComStatus {
-  const status: StatusPessoa = pessoa.ultimaOcorrencia.dataLocalizacao
-    ? 'LOCALIZADO'
-    : 'DESAPARECIDO'
+  const status: StatusPessoa =
+    pessoa.ultimaOcorrencia.dataLocalizacao
+      ? 'LOCALIZADO'
+      : 'DESAPARECIDO'
   return { ...pessoa, status }
 }
 

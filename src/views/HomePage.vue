@@ -95,8 +95,8 @@ const handlePerPageChange = (event: Event) => {
           <label for="status" class="font-medium">Status:</label>
           <select id="status" v-model="status" class="border rounded px-2 py-1 ml-2">
             <option value="">Todos</option>
-            <option value="DESAPARECIDO">Desaparecido</option>
-            <option value="LOCALIZADO">Localizado</option>
+            <option value="DESAPARECIDO">Desaparecido(a)</option>
+            <option value="LOCALIZADO">Localizado(a)</option>
           </select>
         </div>
         <div>
