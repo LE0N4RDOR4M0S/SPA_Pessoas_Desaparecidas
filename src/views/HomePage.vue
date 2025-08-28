@@ -1,18 +1,28 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { ref, watch } from 'vue'
 import { usePeopleApi } from '@/composables/usePessoaApi'
 import PeopleList from '@/components/domain/PeopleList.vue'
 import BaseSpinner from '@/components/base/BaseSpinner.vue'
 import BasePagination from '@/components/base/BasePagination.vue'
 
-const { dados, isLoading, error, fetchPeople, changePage } = usePeopleApi()
+const nome = ref('')
+const status = ref('')
 
-onMounted(() => {
-  fetchPeople()
+const { dados, isLoading, error, perPage, fetchPeople, changePage, changePerPage } = usePeopleApi()
+
+fetchPeople(0, perPage.value, { nome: nome.value, status: status.value })
+
+watch([nome, status], () => {
+  fetchPeople(0, perPage.value, { nome: nome.value, status: status.value })
 })
 
 const handlePageChange = (newPage: number) => {
-  changePage(newPage - 1)
+  changePage(newPage - 1, { nome: nome.value, status: status.value })
+}
+
+const handlePerPageChange = (event: Event) => {
+  const value = Number((event.target as HTMLSelectElement).value)
+  changePerPage(value, { nome: nome.value, status: status.value })
 }
 </script>
 
@@ -30,7 +40,38 @@ const handlePageChange = (newPage: number) => {
       <p><strong>Ocorreu um erro:</strong> {{ error }}</p>
     </div>
 
-    <div v-else-if="dados">
+    <div v-else-if="dados"> 
+      <div class="mb-4 flex flex-wrap items-center gap-4">
+        <div>
+          <label for="nome" class="font-medium">Nome:</label>
+          <input
+            id="nome"
+            v-model="nome"
+            type="text"
+            class="border rounded px-2 py-1 ml-2"
+            placeholder="Buscar por nome"
+          />
+        </div>
+        <div>
+          <label for="status" class="font-medium">Status:</label>
+          <select id="status" v-model="status" class="border rounded px-2 py-1 ml-2">
+            <option value="">Todos</option>
+            <option value="DESAPARECIDO">Desaparecido</option>
+            <option value="LOCALIZADO">Localizado</option>
+          </select>
+        </div>
+        <div>
+          <label for="perPage" class="font-medium">Pessoas por página:</label>
+          <select
+            id="perPage"
+            :value="perPage"
+            @change="handlePerPageChange"
+            class="border rounded px-2 py-1 ml-2"
+          >
+            <option v-for="n in [12, 24, 48, 96]" :key="n" :value="n">{{ n }}</option>
+          </select>
+        </div>
+      </div>
       <PeopleList :people="dados.content" />
 
       <BasePagination

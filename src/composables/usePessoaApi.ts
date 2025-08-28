@@ -1,41 +1,51 @@
-import { ref, type Ref } from 'vue';
-import { peopleService } from '@/services/pessoa.service';
-import type { PessoaComStatus } from '@/types/pessoa.type';
-import type { PaginatedResponse } from '@/types/api';
+import { ref, type Ref } from 'vue'
+import { peopleService } from '@/services/pessoa.service'
+import type { PessoaComStatus } from '@/types/pessoa.type'
+import type { PaginatedResponse } from '@/types/api'
 
 export function usePeopleApi() {
-  const dados: Ref<PaginatedResponse<PessoaComStatus> | null> = ref(null);
-  const isLoading: Ref<boolean> = ref(false);
-  const error: Ref<string | null> = ref(null);
+  const dados: Ref<PaginatedResponse<PessoaComStatus> | null> = ref(null)
+  const isLoading: Ref<boolean> = ref(false)
+  const error: Ref<string | null> = ref(null)
 
-  const currentPage = ref(0);
+  const currentPage = ref(0)
+  const perPage = ref(10)
 
-  const fetchPeople = async () => {
-    isLoading.value = true;
-    error.value = null;
+  const fetchPeople = async (
+    page = currentPage.value,
+    size = perPage.value,
+    filters: Record<string, any> = {},
+  ) => {
+    isLoading.value = true
+    error.value = null
     try {
-      const response = await peopleService.getPeople(currentPage.value);
-      dados.value = response;
+      const response = await peopleService.getPeople(page, size, filters)
+      dados.value = response
+      currentPage.value = page
+      perPage.value = size
     } catch (e) {
-      error.value = 'Falha ao carregar dados. Tente novamente.';
+      error.value = 'Falha ao carregar dados. Tente novamente.'
     } finally {
-      isLoading.value = false;
+      isLoading.value = false
     }
-  };
+  }
 
-  const changePage = (newPage: number) => {
-    if (dados.value && newPage >= 0 && newPage < dados.value.totalPages) {
-      currentPage.value = newPage;
-      fetchPeople();
-    }
-  };
+  const changePage = async (newPage: number, filters: Record<string, any> = {}) => {
+    await fetchPeople(newPage, perPage.value, filters)
+  }
+
+  const changePerPage = async (newSize: number, filters: Record<string, any> = {}) => {
+    await fetchPeople(0, newSize, filters)
+  }
 
   return {
-      dados,
-      isLoading,
-      error,
-      currentPage,
-      changePage,
-      fetchPeople,
-  };
+    dados,
+    isLoading,
+    error,
+    currentPage,
+    perPage,
+    fetchPeople,
+    changePage,
+    changePerPage,
+  }
 }
