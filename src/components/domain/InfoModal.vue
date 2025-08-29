@@ -61,7 +61,7 @@ function submit() {
       <form @submit.prevent="submit" class="flex flex-col gap-3">
         <div>
           <label class="block text-sm font-medium mb-1">Seu nome (opcional):</label>
-          <input v-model="nome" type="text" class="w-full border rounded px-2 py-1" />
+          <input v-model="nome" type="text" class="w-full border rounded px-2 py-1" placeholder="Nome" />
         </div>
         <div>
           <label class="block text-sm font-medium mb-1">Telefone para contato:</label>
