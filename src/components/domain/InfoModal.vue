@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import type { PessoaComStatus } from '@/types/pessoa.type'
 import { ocorrenciaService } from '@/services/ocorrencia.service'
+import type { OcorrenciaInfo } from '@/types/ocorrencia.type'
 
 const props = defineProps<{ pessoa: PessoaComStatus | null }>()
 const emit = defineEmits(['close'])
@@ -20,7 +21,30 @@ function handleFileChange(e: Event) {
 
 function submit() {
   if (!props.pessoa) return
-  emit('close')
+  if (!localAvistamento.value || !detalhes.value || !dataAvistamento.value ) {
+    alert('Preencha todos os campos obrigatórios.')
+    return
+  }
+
+  const [dia, mes, ano] = dataAvistamento.value.split('/')
+  const dataFormatada = `${ano}-${mes}-${dia}`
+
+  const formData = new FormData()
+  formData.append('informacao', localAvistamento.value + ': ' + detalhes.value)
+  formData.append('descricao', 'Foto do avistamento')
+  formData.append('data', dataFormatada)
+  formData.append('ocoId', String(props.pessoa.ultimaOcorrencia.ocoId))
+  fotos.value.forEach(file => formData.append('files', file))
+
+  ocorrenciaService.addInformacaoDesaparecido(formData)
+    .then(() => {
+      alert('Informação enviada com sucesso!')
+      emit('close')
+    })
+    .catch(error => {
+      console.error(error)
+      alert('Erro ao enviar informação. Tente novamente mais tarde.')
+    })
 }
 </script>
 
