@@ -5,7 +5,57 @@
     <div v-else-if="ocorrenciasError" class="text-red-600">{{ ocorrenciasError }}</div>
     <div v-else-if="ocorrencias && ocorrencias.length > 0">
       <div class="flex flex-col gap-6">
-        <div v-for="oco in ocorrenciasPageList" :key="oco.id" class="bg-white rounded-lg shadow-md p-5 flex flex-col gap-3 border border-neutral-200 hover:shadow-lg transition-shadow">
+        <div class="flex flex-wrap items-center gap-4 mb-4">
+          <label class="font-medium flex items-center gap-1">
+            Ordenar:
+            <select v-model="sortOrder" class="border rounded px-2 py-1 ml-2">
+              <option value="desc">Mais recentes</option>
+              <option value="asc">Mais antigos</option>
+            </select>
+          </label>
+          <button
+            type="button"
+            @click="showAdvanced = !showAdvanced"
+            class="flex items-center gap-1 text-sm text-gray-600 hover:text-primary-700 bg-transparent border-0 shadow-none px-2 py-1 transition"
+            style="box-shadow: none"
+          >
+            <span>
+              {{ showAdvanced ? 'Ocultar filtros avançados' : 'Filtros avançados' }}
+            </span>
+            <svg
+              :class="['transition-transform duration-300', showAdvanced ? 'rotate-180' : 'rotate-0']"
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+          <template v-if="showAdvanced">
+            <div class="flex gap-4 items-center">
+              <label class="font-medium flex items-center gap-1">
+                Data início:
+                <input type="date" v-model="filterStartDate" class="border rounded px-2 py-1 ml-2" />
+              </label>
+              <label class="font-medium flex items-center gap-1">
+                Data fim:
+                <input type="date" v-model="filterEndDate" class="border rounded px-2 py-1 ml-2" />
+              </label>
+              <label class="font-medium flex items-center gap-1 ml-4">
+                <input type="checkbox" v-model="onlyWithAttachment" class="accent-primary-600" />
+                Apenas com anexo
+              </label>
+            </div>
+          </template>
+        </div>
+        <div v-for="oco in sortedOcorrencias.slice(0, ocorrenciasShown)" :key="oco.id" class="bg-white rounded-lg shadow-md p-5 flex flex-col gap-3 border border-neutral-200 hover:shadow-lg transition-shadow">
           <div class="flex items-center gap-3 mb-1">
             <span class="inline-flex items-center px-2 py-1 bg-neutral-100 text-primary-700 rounded-full text-xs font-semibold">
               <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -49,9 +99,11 @@
 </template>
 
 <script setup lang="ts">
+const onlyWithAttachment = ref(false)
+const showAdvanced = ref(false)
 
-import type { OcorrenciaInfo } from '@/services/ocorrencia.service'
-import { defineProps, defineEmits } from 'vue'
+import type { OcorrenciaInfo } from '@/types/ocorrencia.type'
+import { defineProps, defineEmits, ref, computed } from 'vue'
 
 interface PersonDetailOcorrenciasProps {
   ocorrencias: OcorrenciaInfo[] | null
@@ -61,9 +113,34 @@ interface PersonDetailOcorrenciasProps {
   ocorrenciasShown: number
 }
 
-defineProps<PersonDetailOcorrenciasProps>()
+const props = defineProps<PersonDetailOcorrenciasProps>()
+const sortOrder = ref<'asc' | 'desc'>('desc')
+const filterStartDate = ref<string>('')
+const filterEndDate = ref<string>('')
 
-defineEmits(['carregar-mais'])
+const sortedOcorrencias = computed(() => {
+  if (!props.ocorrenciasPageList) return []
+  let list = [...props.ocorrenciasPageList]
+  if (filterStartDate.value) {
+    const start = new Date(filterStartDate.value)
+    list = list.filter(oco => new Date(oco.data) >= start)
+  }
+  if (filterEndDate.value) {
+    const end = new Date(filterEndDate.value)
+    list = list.filter(oco => new Date(oco.data) <= end)
+  }
+  if (onlyWithAttachment.value) {
+    list = list.filter(oco => oco.anexos && oco.anexos.length > 0)
+  }
+  list.sort((a, b) => {
+    const da = new Date(a.data).getTime()
+    const db = new Date(b.data).getTime()
+    return sortOrder.value === 'asc' ? da - db : db - da
+  })
+  return list
+})
+
+const emit = defineEmits(['carregar-mais'])
 
 function isImage(url: string): boolean {
   return /\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(url.split('?')[0]);
