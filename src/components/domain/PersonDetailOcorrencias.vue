@@ -1,6 +1,6 @@
 <template>
   <div class="mt-8">
-    <h3 class="text-lg font-semibold text-primary-700 mb-2">Ocorrências Relacionadas</h3>
+    <h3 class="text-lg font-semibold text-gray-800 mb-2">Ocorrências Relacionadas</h3>
     <div v-if="ocorrenciasLoading" class="text-neutral-500">Carregando ocorrências...</div>
     <div v-else-if="ocorrenciasError" class="text-red-600">{{ ocorrenciasError }}</div>
     <div v-else-if="ocorrencias && ocorrencias.length > 0">
@@ -55,37 +55,46 @@
             </div>
           </template>
         </div>
-        <div v-for="oco in sortedOcorrencias.slice(0, ocorrenciasShown)" :key="oco.id" class="bg-white rounded-lg shadow-md p-5 flex flex-col gap-3 border border-neutral-200 hover:shadow-lg transition-shadow">
-          <div class="flex items-center gap-3 mb-1">
-            <span class="inline-flex items-center px-2 py-1 bg-neutral-100 text-primary-700 rounded-full text-xs font-semibold">
-              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-              {{ new Date(oco.data).toLocaleDateString('pt-BR') }}
-            </span>
-            <span class="ml-auto text-xs text-neutral-500">#{{ oco.ocoId }}</span>
-          </div>
-          <div class="mb-1">
-            <span class="font-bold text-neutral-700">Informação:</span>
-            <span class="ml-1">{{ oco.informacao }}</span>
-          </div>
-          <div v-if="oco.anexos && oco.anexos.length > 0" class="flex flex-wrap gap-2 mt-2">
-            <span class="font-bold text-neutral-700 w-full">Anexos:</span>
-            <a
-              v-for="anexo in oco.anexos"
-              :key="anexo"
-              :href="anexo"
-              target="_blank"
-              class="flex flex-col items-center gap-1 px-3 py-2 bg-primary-50 border border-primary-200 rounded shadow text-primary-700 hover:bg-primary-100 hover:text-primary-900 transition-colors text-xs font-medium w-28 max-w-full overflow-hidden"
-            >
-              <span v-if="isImage(anexo)" class="block w-full h-20 flex items-center justify-center overflow-hidden mb-1">
-                <img :src="anexo" alt="Prévia do anexo" class="object-contain w-full h-full rounded border border-neutral-200 bg-white" loading="lazy" />
+        <transition-group name="oco-fade" tag="div" class="flex flex-col gap-6">
+          <div
+            v-for="oco in sortedOcorrencias.slice(0, ocorrenciasShown)"
+            :key="oco.id"
+            class="relative group bg-gradient-to-br from-white/80 to-primary-40/50 border-2 border-transparent bg-clip-padding sm:p-7 flex flex-col gap-2 transition-all duration-300 oco-card-glass hover:shadow-2xl"
+            tabindex="0"
+          >
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-1">
+              <span class="inline-flex items-center px-2 py-1 bg-primary-100/70 text-primary-700 border border-primary-200 text-xs font-semibold shadow-sm uppercase tracking-wide">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                {{ new Date(oco.data).toLocaleDateString('pt-BR') }}
               </span>
-              <span v-else class="block w-full h-20 flex items-center justify-center mb-1">
-                <svg class="w-8 h-8 text-primary-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.586-6.586a2 2 0 10-2.828-2.828z"/></svg>
+            </div>
+            <div class="mb-1 flex items-start gap-2">
+              <span class="text-neutral-700">{{ oco.informacao }}</span>
+            </div>
+            <div v-if="oco.anexos && oco.anexos.length > 0" class="flex flex-wrap gap-2 mt-2">
+              <span class="font-bold text-primary-700 w-full flex items-center gap-1">
+                <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.586-6.586a2 2 0 10-2.828-2.828z"/></svg>
+                Anexos:
               </span>
-              <span class="truncate max-w-[100px] text-center" :title="getFileName(anexo)">{{ getFileName(anexo) }}</span>
-            </a>
+              <a
+                v-for="anexo in oco.anexos"
+                :key="anexo"
+                :href="anexo"
+                target="_blank"
+                class="flex flex-col items-center gap-1 px-2 py-2 sm:px-3 bg-primary-100/60 border border-primary-200 shadow text-primary-700 hover:bg-primary-200/80 hover:text-primary-900 transition-all text-xs font-medium w-24 sm:w-28 max-w-full overflow-hidden outline-none"
+                tabindex="0"
+              >
+                <span v-if="isImage(anexo)" class="block w-full h-16 sm:h-20 flex items-center justify-center overflow-hidden mb-1">
+                  <img :src="anexo" alt="Prévia do anexo" class="object-contain w-full h-full border border-primary-200 bg-white/80 transition-all duration-200 group-hover:shadow-lg" loading="lazy" />
+                </span>
+                <span v-else class="block w-full h-16 sm:h-20 flex items-center justify-center mb-1">
+                  <svg class="w-8 h-8 text-primary-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.586-6.586a2 2 0 10-2.828-2.828z"/></svg>
+                </span>
+                <span class="truncate max-w-[100px] text-center" :title="getFileName(anexo)">{{ getFileName(anexo) }}</span>
+              </a>
+            </div>
           </div>
-        </div>
+        </transition-group>
       </div>
       <div class="flex justify-center mt-6" v-if="ocorrencias && ocorrenciasShown < ocorrencias.length">
         <button
@@ -140,7 +149,6 @@ const sortedOcorrencias = computed(() => {
   return list
 })
 
-const emit = defineEmits(['carregar-mais'])
 
 function isImage(url: string): boolean {
   return /\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(url.split('?')[0]);

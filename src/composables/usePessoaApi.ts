@@ -14,7 +14,7 @@ export function usePeopleApi() {
   const fetchPeople = async (
     page = currentPage.value,
     size = perPage.value,
-    filters: Record<string, any> = {},
+    filters: Record<string, unknown> = {},
     faixaIdadeInicial: number = 0,
     faixaIdadeFinal: number = 0,
     sexo: string = ''
@@ -35,7 +35,7 @@ export function usePeopleApi() {
       dados.value = response
       currentPage.value = page
       perPage.value = size
-    } catch (e) {
+    } catch {
       error.value = 'Falha ao carregar dados. Tente novamente.'
     } finally {
       isLoading.value = false
@@ -44,7 +44,7 @@ export function usePeopleApi() {
 
   const changePage = async (
     newPage: number,
-    filters: Record<string, any> = {},
+    filters: Record<string, unknown> = {},
     faixaIdadeInicial: number = 0,
     faixaIdadeFinal: number = 0,
     sexo: string = ''
@@ -54,7 +54,7 @@ export function usePeopleApi() {
 
   const changePerPage = async (
     newSize: number,
-    filters: Record<string, any> = {},
+    filters: Record<string, unknown> = {},
     faixaIdadeInicial: number = 0,
     faixaIdadeFinal: number = 0,
     sexo: string = ''

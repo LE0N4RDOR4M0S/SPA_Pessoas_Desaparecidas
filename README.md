@@ -1,41 +1,34 @@
-# desenvolve_mt_pratica
+# SPA Pessoas Desaparecidas
 
-This template should help get you started developing with Vue 3 in Vite.
+**Autor:** Leonardo de Oliveira Ramos
 
-## Recommended IDE Setup
+**E-mail:** leolivramos@gmail.com
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+**Telefone:** (65)99212-1341
 
-## Customize configuration
+# Sobre o Projeto
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+Aplicação SPA desenvolvida em Vue 3 + Vite para gerenciamento e visualização de pessoas desaparecidas, com filtros avançados, responsividade e experiência moderna.
 
-## Project Setup
+## Passo a Passo para Instalação, Execução e Testes
+
+### 1. Pré-requisitos
+
+- Node.js 20+ (https://nodejs.org/)
+- npm 9+ (instalado junto com o Node)
+
+### 2. Instalação das Dependências
+
+No terminal, execute:
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### 3. Executando o Projeto em Modo Desenvolvimento
 
 ```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-npm run test:unit
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+Acesse o endereço exibido no terminal (http://localhost:5173).

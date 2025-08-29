@@ -7,7 +7,7 @@ export const ocorrenciaService = {
       '/ocorrencias/informacoes-desaparecido',
       { params: { ocorrenciaId } }
     )
-    return response.data
+    return response.data.sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())
   },
 
   async addInformacaoDesaparecido(payload: FormData): Promise<OcorrenciaInfo> {

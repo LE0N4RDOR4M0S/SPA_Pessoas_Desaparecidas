@@ -24,7 +24,7 @@ export default defineConfig([
 
   js.configs.recommended,
   ...pluginVue.configs['flat/essential'],
-  ...ts,
+    ts(),
 
   {
     ...pluginVitest.configs.recommended,

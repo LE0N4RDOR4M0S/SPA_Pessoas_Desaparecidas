@@ -3,7 +3,7 @@ import type { PessoaComStatus } from '@/types/pessoa.type'
 import { RouterLink } from 'vue-router'
 import { ref } from 'vue'
 
-const props = defineProps<{
+defineProps<{
   person: PessoaComStatus
 }>()
 

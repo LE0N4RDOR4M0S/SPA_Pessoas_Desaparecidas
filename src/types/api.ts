@@ -1,4 +1,4 @@
-import type { Pessoa, StatusPessoa } from './pessoa.type';
+import type { Pessoa } from './pessoa.type';
 
 export interface PaginatedResponse<T> {
   content: T[];

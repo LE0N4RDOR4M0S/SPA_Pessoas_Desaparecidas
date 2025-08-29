@@ -21,9 +21,37 @@
       :ocorrencias-error="ocorrenciasError"
       :ocorrencias-page-list="ocorrenciasPageList"
       :ocorrencias-shown="ocorrenciasShown"
+      :sort-order="sortOrder"
+      :filter-start-date="filterStartDate"
+      :filter-end-date="filterEndDate"
+      :only-with-attachment="onlyWithAttachment"
       @carregar-mais="ocorrenciasShown += 4"
     />
-    <InfoModal v-if="showInfoModal" :pessoa="pessoa" @close="showInfoModal = false" />
+    <InfoModal
+      v-if="showInfoModal"
+      :pessoa="pessoa"
+      @close="showInfoModal = false"
+      @ocorrencia-adicionada="recarregarOcorrencias"
+      @feedback="handleFeedback"
+    />
+
+    <transition name="fade">
+      <div
+        v-if="feedbackMsg"
+        :class="[
+          'fixed left-1/2 -translate-x-1/2 bottom-24 z-[100] px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 text-base font-semibold',
+          feedbackTipo === 'sucesso' ? 'bg-green-100 text-green-800 border border-green-300' : '',
+          feedbackTipo === 'erro' ? 'bg-red-100 text-red-800 border border-red-300' : '',
+          feedbackTipo === 'info' ? 'bg-blue-100 text-blue-800 border border-blue-300' : ''
+        ]"
+        style="min-width:220px; max-width:90vw;"
+      >
+        <span v-if="feedbackTipo === 'sucesso'"></span>
+        <span v-else-if="feedbackTipo === 'erro'"></span>
+        <span v-else-if="feedbackTipo === 'info'"></span>
+        <span>{{ feedbackMsg }}</span>
+      </div>
+    </transition>
     <button
       @click="showInfoModal = true"
       class="fixed bottom-8 right-8 z-50 flex items-center gap-2 px-5 py-3 rounded-full bg-primary-600 text-white shadow-lg hover:bg-primary-700 transition-all text-base font-semibold"
@@ -38,6 +66,19 @@
 </template>
 
 <script setup lang="ts">
+const feedbackMsg = ref('')
+const feedbackTipo = ref<'sucesso' | 'erro' | 'info' | ''>('')
+let feedbackTimeout: ReturnType<typeof setTimeout> | null = null
+
+function handleFeedback({ tipo, mensagem }: { tipo: 'sucesso' | 'erro' | 'info'; mensagem: string }) {
+  feedbackMsg.value = mensagem
+  feedbackTipo.value = tipo
+  if (feedbackTimeout) clearTimeout(feedbackTimeout)
+  feedbackTimeout = setTimeout(() => {
+    feedbackMsg.value = ''
+    feedbackTipo.value = ''
+  }, 3500)
+}
 import { onMounted, ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { peopleService } from '@/services/pessoa.service'
@@ -61,10 +102,32 @@ const ocorrencias = ref<OcorrenciaInfo[] | null>(null)
 const ocorrenciasLoading = ref(false)
 const ocorrenciasError = ref('')
 const ocorrenciasShown = ref(4)
+const sortOrder = ref<'asc' | 'desc'>('desc')
+const filterStartDate = ref('')
+const filterEndDate = ref('')
+const onlyWithAttachment = ref(false)
+
+
 const ocorrenciasPageList = computed(() => {
   if (!ocorrencias.value) return []
   return ocorrencias.value.slice(0, ocorrenciasShown.value)
 })
+
+async function recarregarOcorrencias() {
+  if (pessoa.value?.ultimaOcorrencia?.ocoId) {
+    ocorrenciasLoading.value = true
+    try {
+      ocorrencias.value = await ocorrenciaService.getInformacoesDesaparecido(
+        pessoa.value.ultimaOcorrencia.ocoId,
+      )
+      ocorrenciasError.value = ''
+    } catch {
+      ocorrenciasError.value = 'Erro ao carregar ocorrências detalhadas.'
+    } finally {
+      ocorrenciasLoading.value = false
+    }
+  }
+}
 
 onMounted(async () => {
   try {
@@ -76,13 +139,13 @@ onMounted(async () => {
         ocorrencias.value = await ocorrenciaService.getInformacoesDesaparecido(
           pessoa.value.ultimaOcorrencia.ocoId,
         )
-      } catch (e) {
+      } catch {
         ocorrenciasError.value = 'Erro ao carregar ocorrências detalhadas.'
       } finally {
         ocorrenciasLoading.value = false
       }
     }
-  } catch (e) {
+  } catch {
     error.value = 'Erro ao carregar dados da pessoa.'
   } finally {
     isLoading.value = false
