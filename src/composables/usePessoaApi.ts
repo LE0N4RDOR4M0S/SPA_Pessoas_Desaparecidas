@@ -17,21 +17,17 @@ export function usePeopleApi() {
     filters: Record<string, unknown> = {},
     faixaIdadeInicial: number = 0,
     faixaIdadeFinal: number = 0,
-    sexo: string = ''
+    sexo: string = '',
   ) => {
     isLoading.value = true
     error.value = null
     try {
-      const response = await peopleService.getPeople(
-        page,
-        size,
-        {
-          ...filters,
-          faixaIdadeInicial,
-          faixaIdadeFinal,
-          sexo,
-        }
-      )
+      const response = await peopleService.getPeople(page, size, {
+        ...filters,
+        faixaIdadeInicial,
+        faixaIdadeFinal,
+        sexo,
+      })
       dados.value = response
       currentPage.value = page
       perPage.value = size
@@ -47,7 +43,7 @@ export function usePeopleApi() {
     filters: Record<string, unknown> = {},
     faixaIdadeInicial: number = 0,
     faixaIdadeFinal: number = 0,
-    sexo: string = ''
+    sexo: string = '',
   ) => {
     await fetchPeople(newPage, perPage.value, filters, faixaIdadeInicial, faixaIdadeFinal, sexo)
   }

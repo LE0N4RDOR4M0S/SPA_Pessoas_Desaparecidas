@@ -39,13 +39,30 @@ fetchPeople(0, perPage.value, getFilters())
 
 watch([status, faixaIdadeInicial, faixaIdadeFinal, sexo], () => {
   if (showAdvanced.value) {
-    fetchPeople(0, perPage.value, getFilters())
+    fetchPeople(
+      0,
+      perPage.value,
+      {
+        nome: nomeBusca.value,
+        status: status.value,
+      },
+      faixaIdadeInicial.value,
+      faixaIdadeFinal.value,
+      sexo.value,
+    )
   }
 })
 
 const handleNomeSearch = () => {
   nomeBusca.value = nome.value
-  fetchPeople(0, perPage.value, getFilters())
+  fetchPeople(
+    0,
+    perPage.value,
+    getFilters(),
+    faixaIdadeInicial.value,
+    faixaIdadeFinal.value,
+    sexo.value,
+  )
 }
 
 const handleNomeKey = (e: KeyboardEvent) => {
@@ -69,31 +86,42 @@ const handlePerPageChange = (event: Event) => {
 </script>
 
 <template>
-  <main class="container mx-auto p-6">
-    <div class="mb-8">
-      <h2 class="text-2xl font-semibold text-gray-800">Registros Atuais</h2>
+  <main class="container mx-auto p-2 sm:p-6">
+    <div class="mb-6 sm:mb-8">
+      <h2 class="text-xl sm:text-2xl font-semibold text-gray-800">Registros Atuais</h2>
     </div>
-
-    <form @submit.prevent="handleNomeSearch" class="mb-4 flex flex-wrap items-center gap-4">
-      <div>
+    <form
+      @submit.prevent="handleNomeSearch"
+      class="mb-4 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4"
+    >
+      <div
+        class="flex flex-col sm:flex-row items-stretch sm:items-center gap-1 sm:gap-2 w-full sm:w-auto"
+      >
         <label for="nome" class="font-medium">Nome:</label>
         <input
           id="nome"
           v-model="nome"
           type="text"
-          class="border rounded px-2 py-1 ml-2"
+          class="border rounded px-2 py-1 w-full sm:w-auto"
           placeholder="Buscar por nome"
           @keyup="handleNomeKey"
         />
-        <button type="submit" class="ml-2 px-3 py-1 bg-gray-600 text-white rounded">OK</button>
+        <button
+          type="submit"
+          class="mt-2 sm:mt-0 sm:ml-2 px-3 py-1 bg-gray-600 text-white rounded w-full sm:w-auto"
+        >
+          OK
+        </button>
       </div>
-      <div>
+      <div
+        class="flex flex-col sm:flex-row items-stretch sm:items-center gap-1 sm:gap-2 w-full sm:w-auto"
+      >
         <label for="perPage" class="font-medium">Pessoas por página:</label>
         <select
           id="perPage"
           :value="perPage"
           @change="handlePerPageChange"
-          class="border rounded px-2 py-1 ml-2"
+          class="border rounded px-2 py-1 w-full sm:w-auto"
         >
           <option v-for="n in [12, 24, 48, 96]" :key="n" :value="n">{{ n }}</option>
         </select>
@@ -101,7 +129,7 @@ const handlePerPageChange = (event: Event) => {
       <button
         type="button"
         @click="showAdvanced = !showAdvanced"
-        class="flex items-center gap-1 text-sm text-gray-600 hover:text-primary-700 bg-transparent border-0 shadow-none px-2 py-1 transition"
+        class="flex items-center gap-1 text-sm text-gray-600 hover:text-primary-700 bg-transparent border-0 shadow-none px-2 py-1 transition w-full sm:w-auto"
         style="box-shadow: none"
       >
         <span>
@@ -124,29 +152,35 @@ const handlePerPageChange = (event: Event) => {
         </svg>
       </button>
       <template v-if="showAdvanced">
-        <div>
+        <div
+          class="flex flex-col sm:flex-row items-stretch sm:items-center gap-1 sm:gap-2 w-full sm:w-auto"
+        >
           <label for="status" class="font-medium">Status:</label>
-          <select id="status" v-model="status" class="border rounded px-2 py-1 ml-2">
+          <select id="status" v-model="status" class="border rounded px-2 py-1 w-full sm:w-auto">
             <option value="">Todos</option>
             <option value="DESAPARECIDO">Desaparecido(a)</option>
             <option value="LOCALIZADO">Localizado(a)</option>
           </select>
         </div>
-        <div>
+        <div
+          class="flex flex-col sm:flex-row items-stretch sm:items-center gap-1 sm:gap-2 w-full sm:w-auto"
+        >
           <label for="faixaIdade" class="font-medium">Faixa Etária:</label>
           <select
             id="faixaIdade"
             @change="handleFaixaIdadeChange"
-            class="border rounded px-2 py-1 ml-2"
+            class="border rounded px-2 py-1 w-full sm:w-auto"
           >
             <option v-for="(faixa, idx) in faixasIdade" :key="faixa.label" :value="idx">
               {{ faixa.label }}
             </option>
           </select>
         </div>
-        <div>
+        <div
+          class="flex flex-col sm:flex-row items-stretch sm:items-center gap-1 sm:gap-2 w-full sm:w-auto"
+        >
           <label for="sexo" class="font-medium">Sexo:</label>
-          <select id="sexo" v-model="sexo" class="border rounded px-2 py-1 ml-2">
+          <select id="sexo" v-model="sexo" class="border rounded px-2 py-1 w-full sm:w-auto">
             <option value="">Todos</option>
             <option value="MASCULINO">Masculino</option>
             <option value="FEMININO">Feminino</option>

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { PessoaComStatus } from '@/types/pessoa.type';
-import PersonCard from './PersonCard.vue';
+import type { PessoaComStatus } from '@/types/pessoa.type'
+import PersonCard from './PersonCard.vue'
 
 defineProps<{
-  people: PessoaComStatus[];
-}>();
+  people: PessoaComStatus[]
+}>()
 </script>
 
 <template>
@@ -15,7 +15,7 @@ defineProps<{
   <transition-group
     name="fade-list"
     tag="div"
-    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+    class="grid grid-cols-1 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 px-2 sm:px-0"
   >
     <PersonCard
       v-for="person in people"
@@ -37,13 +37,14 @@ defineProps<{
   }
 }
 .animate-fade-in {
-  animation: fade-in 0.6s cubic-bezier(0.4,0,0.2,1);
+  animation: fade-in 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.fade-list-enter-active, .fade-list-leave-active {
+.fade-list-enter-active,
+.fade-list-leave-active {
   transition: opacity 0.5s;
 }
-.fade-list-enter-from, .fade-list-leave-to {
+.fade-list-enter-from,
+.fade-list-leave-to {
   opacity: 0;
 }
 </style>
-

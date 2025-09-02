@@ -21,8 +21,11 @@ function handleFileChange(e: Event) {
 
 async function submit() {
   if (!props.pessoa) return
-  if (!localAvistamento.value || !detalhes.value || !dataAvistamento.value ) {
-    emit('feedback', { tipo: 'erro', mensagem: 'Por favor, preencha todos os campos obrigatórios.' })
+  if (!localAvistamento.value || !detalhes.value || !dataAvistamento.value) {
+    emit('feedback', {
+      tipo: 'erro',
+      mensagem: 'Por favor, preencha todos os campos obrigatórios.',
+    })
     return
   }
 
@@ -34,15 +37,18 @@ async function submit() {
   formData.append('descricao', 'Foto do avistamento')
   formData.append('data', dataFormatada)
   formData.append('ocoId', String(props.pessoa.ultimaOcorrencia.ocoId))
-  fotos.value.forEach(file => formData.append('files', file))
+  fotos.value.forEach((file) => formData.append('files', file))
 
   enviando.value = true
   emit('feedback', { tipo: 'info', mensagem: 'Enviando sua informação, aguarde...' })
   try {
-  await ocorrenciaService.addInformacaoDesaparecido(formData)
-  emit('feedback', { tipo: 'sucesso', mensagem: 'Informação enviada com sucesso! Obrigado pela colaboração.' })
-  emit('ocorrencia-adicionada')
-  emit('close')
+    await ocorrenciaService.addInformacaoDesaparecido(formData)
+    emit('feedback', {
+      tipo: 'sucesso',
+      mensagem: 'Informação enviada com sucesso! Obrigado pela colaboração.',
+    })
+    emit('ocorrencia-adicionada')
+    emit('close')
   } catch (error) {
     console.error(error)
     emit('feedback', { tipo: 'erro', mensagem: 'Ocorreu um erro ao enviar.' })
@@ -55,7 +61,6 @@ async function submit() {
 <template>
   <div class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
     <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
-
       <button
         @click="emit('close')"
         class="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-xl"
@@ -63,10 +68,15 @@ async function submit() {
         &times;
       </button>
       <h3 class="text-lg font-bold mb-4">Nova informação sobre {{ pessoa?.nome }}</h3>
-  <form @submit.prevent="submit" class="flex flex-col gap-3">
+      <form @submit.prevent="submit" class="flex flex-col gap-3">
         <div>
           <label class="block text-sm font-medium mb-1">Seu nome (opcional):</label>
-          <input v-model="nome" type="text" class="w-full border rounded px-2 py-1" placeholder="Nome" />
+          <input
+            v-model="nome"
+            type="text"
+            class="w-full border rounded px-2 py-1"
+            placeholder="Nome"
+          />
         </div>
         <div>
           <label class="block text-sm font-medium mb-1">Telefone para contato:</label>
@@ -102,27 +112,59 @@ async function submit() {
         </div>
         <div>
           <label class="block text-sm font-medium mb-1">Local do avistamento:</label>
-          <input v-model="localAvistamento" type="text" class="w-full border rounded px-2 py-1" />
+          <input
+            v-model="localAvistamento"
+            type="text"
+            class="w-full border rounded px-2 py-1"
+            placeholder="Ex: Praça Oito de Abril"
+          />
         </div>
         <div>
           <label class="block text-sm font-medium mb-1">Detalhes:</label>
-          <textarea v-model="detalhes" class="w-full border rounded px-2 py-1" rows="3"></textarea>
+          <textarea
+            v-model="detalhes"
+            class="w-full border rounded px-2 py-1"
+            rows="3"
+            placeholder="O que sabe?"
+          ></textarea>
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">Anexar fotos:</label>
-            <input
-              type="file"
-              multiple
-              accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx,.txt,video/*,audio/*"
-              @change="handleFileChange"
-            />
+          <label class="block text-sm font-medium mb-1"
+            >Anexar arquivos (fotos, vídeos, documentos, etc):</label
+          >
+          <input
+            type="file"
+            multiple
+            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
+            accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx,.txt,video/*,audio/*"
+            @change="handleFileChange"
+          />
+          <div v-if="fotos.length" class="mt-2 text-xs text-gray-600">
+            <div v-for="(file, idx) in fotos" :key="idx">
+              {{ file.name }}
+            </div>
+          </div>
         </div>
         <button
           type="submit"
           class="mt-2 px-4 py-2 rounded bg-primary-600 text-white font-semibold shadow hover:bg-primary-700 transition disabled:opacity-60 disabled:cursor-not-allowed"
         >
           <span v-if="enviando">
-            <svg class="inline animate-spin h-5 w-5 mr-1 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
+            <svg
+              class="inline animate-spin h-5 w-5 mr-1 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+            </svg>
             Enviando...
           </span>
           <span v-else>Enviar informação</span>
