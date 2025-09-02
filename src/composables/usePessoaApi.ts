@@ -14,19 +14,13 @@ export function usePeopleApi() {
   const fetchPeople = async (
     page = currentPage.value,
     size = perPage.value,
-    filters: Record<string, unknown> = {},
-    faixaIdadeInicial: number = 0,
-    faixaIdadeFinal: number = 0,
-    sexo: string = '',
+    filters: Record<string, unknown> = {}
   ) => {
     isLoading.value = true
     error.value = null
     try {
       const response = await peopleService.getPeople(page, size, {
-        ...filters,
-        faixaIdadeInicial,
-        faixaIdadeFinal,
-        sexo,
+        ...filters
       })
       dados.value = response
       currentPage.value = page
@@ -40,22 +34,16 @@ export function usePeopleApi() {
 
   const changePage = async (
     newPage: number,
-    filters: Record<string, unknown> = {},
-    faixaIdadeInicial: number = 0,
-    faixaIdadeFinal: number = 0,
-    sexo: string = '',
+    filters: Record<string, unknown> = {}
   ) => {
-    await fetchPeople(newPage, perPage.value, filters, faixaIdadeInicial, faixaIdadeFinal, sexo)
+    await fetchPeople(newPage, perPage.value, filters)
   }
 
   const changePerPage = async (
     newSize: number,
-    filters: Record<string, unknown> = {},
-    faixaIdadeInicial: number = 0,
-    faixaIdadeFinal: number = 0,
-    sexo: string = ''
+    filters: Record<string, unknown> = {}
   ) => {
-    await fetchPeople(0, newSize, filters, faixaIdadeInicial, faixaIdadeFinal, sexo)
+    await fetchPeople(0, newSize, filters)
   }
 
   return {

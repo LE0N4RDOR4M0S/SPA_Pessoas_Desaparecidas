@@ -8,8 +8,7 @@ import BasePagination from '@/components/base/BasePagination.vue'
 const nome = ref('')
 const nomeBusca = ref('')
 const status = ref('')
-const faixaIdadeInicial = ref(0)
-const faixaIdadeFinal = ref(0)
+const faixaIdade = ref(0)
 const sexo = ref('')
 const showAdvanced = ref(false)
 
@@ -26,43 +25,27 @@ const faixasIdade = [
 const { dados, isLoading, error, perPage, fetchPeople, changePage, changePerPage } = usePeopleApi()
 
 function getFilters() {
+  const faixa = faixasIdade[faixaIdade.value]
   return {
     nome: nomeBusca.value,
     status: status.value,
-    faixaIdadeInicial: faixaIdadeInicial.value,
-    faixaIdadeFinal: faixaIdadeFinal.value,
+    faixaIdadeInicial: faixa.inicial,
+    faixaIdadeFinal: faixa.final,
     sexo: sexo.value,
   }
 }
 
 fetchPeople(0, perPage.value, getFilters())
 
-watch([status, faixaIdadeInicial, faixaIdadeFinal, sexo], () => {
+watch([status, faixaIdade, sexo], () => {
   if (showAdvanced.value) {
-    fetchPeople(
-      0,
-      perPage.value,
-      {
-        nome: nomeBusca.value,
-        status: status.value,
-      },
-      faixaIdadeInicial.value,
-      faixaIdadeFinal.value,
-      sexo.value,
-    )
+    fetchPeople(0, perPage.value, getFilters())
   }
 })
 
 const handleNomeSearch = () => {
   nomeBusca.value = nome.value
-  fetchPeople(
-    0,
-    perPage.value,
-    getFilters(),
-    faixaIdadeInicial.value,
-    faixaIdadeFinal.value,
-    sexo.value,
-  )
+  fetchPeople(0, perPage.value, getFilters())
 }
 
 const handleNomeKey = (e: KeyboardEvent) => {
@@ -70,9 +53,7 @@ const handleNomeKey = (e: KeyboardEvent) => {
 }
 
 const handleFaixaIdadeChange = (event: Event) => {
-  const idx = Number((event.target as HTMLSelectElement).value)
-  faixaIdadeInicial.value = faixasIdade[idx].inicial
-  faixaIdadeFinal.value = faixasIdade[idx].final
+  faixaIdade.value = Number((event.target as HTMLSelectElement).value)
 }
 
 const handlePageChange = (newPage: number) => {
@@ -86,13 +67,13 @@ const handlePerPageChange = (event: Event) => {
 </script>
 
 <template>
-  <main class="container mx-auto p-2 sm:p-6">
+  <main class="container mx-auto px-2 py-2 sm:px-6 sm:py-6 w-full">
     <div class="mb-6 sm:mb-8">
       <h2 class="text-xl sm:text-2xl font-semibold text-gray-800">Registros Atuais</h2>
     </div>
     <form
       @submit.prevent="handleNomeSearch"
-      class="mb-4 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4"
+      class="mb-4 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-4 w-full"
     >
       <div
         class="flex flex-col sm:flex-row items-stretch sm:items-center gap-1 sm:gap-2 w-full sm:w-auto"
@@ -102,13 +83,13 @@ const handlePerPageChange = (event: Event) => {
           id="nome"
           v-model="nome"
           type="text"
-          class="border rounded px-2 py-1 w-full sm:w-auto"
+          class="border rounded px-3 py-2 w-full sm:w-auto min-w-0 text-base sm:text-sm"
           placeholder="Buscar por nome"
           @keyup="handleNomeKey"
         />
         <button
           type="submit"
-          class="mt-2 sm:mt-0 sm:ml-2 px-3 py-1 bg-gray-600 text-white rounded w-full sm:w-auto"
+          class="mt-2 sm:mt-0 sm:ml-2 px-4 py-2 bg-gray-600 text-white rounded w-full sm:w-auto text-base sm:text-sm"
         >
           OK
         </button>
@@ -121,7 +102,7 @@ const handlePerPageChange = (event: Event) => {
           id="perPage"
           :value="perPage"
           @change="handlePerPageChange"
-          class="border rounded px-2 py-1 w-full sm:w-auto"
+          class="border rounded px-3 py-2 w-full sm:w-auto min-w-0 text-base sm:text-sm"
         >
           <option v-for="n in [12, 24, 48, 96]" :key="n" :value="n">{{ n }}</option>
         </select>
@@ -129,7 +110,7 @@ const handlePerPageChange = (event: Event) => {
       <button
         type="button"
         @click="showAdvanced = !showAdvanced"
-        class="flex items-center gap-1 text-sm text-gray-600 hover:text-primary-700 bg-transparent border-0 shadow-none px-2 py-1 transition w-full sm:w-auto"
+        class="flex items-center gap-1 text-base sm:text-sm text-gray-600 hover:text-primary-700 bg-transparent border-0 shadow-none px-3 py-2 transition w-full sm:w-auto"
         style="box-shadow: none"
       >
         <span>
@@ -156,7 +137,7 @@ const handlePerPageChange = (event: Event) => {
           class="flex flex-col sm:flex-row items-stretch sm:items-center gap-1 sm:gap-2 w-full sm:w-auto"
         >
           <label for="status" class="font-medium">Status:</label>
-          <select id="status" v-model="status" class="border rounded px-2 py-1 w-full sm:w-auto">
+          <select id="status" v-model="status" class="border rounded px-3 py-2 w-full sm:w-auto text-base sm:text-sm">
             <option value="">Todos</option>
             <option value="DESAPARECIDO">Desaparecido(a)</option>
             <option value="LOCALIZADO">Localizado(a)</option>
@@ -169,7 +150,7 @@ const handlePerPageChange = (event: Event) => {
           <select
             id="faixaIdade"
             @change="handleFaixaIdadeChange"
-            class="border rounded px-2 py-1 w-full sm:w-auto"
+            class="border rounded px-3 py-2 w-full sm:w-auto text-base sm:text-sm"
           >
             <option v-for="(faixa, idx) in faixasIdade" :key="faixa.label" :value="idx">
               {{ faixa.label }}
@@ -180,7 +161,7 @@ const handlePerPageChange = (event: Event) => {
           class="flex flex-col sm:flex-row items-stretch sm:items-center gap-1 sm:gap-2 w-full sm:w-auto"
         >
           <label for="sexo" class="font-medium">Sexo:</label>
-          <select id="sexo" v-model="sexo" class="border rounded px-2 py-1 w-full sm:w-auto">
+          <select id="sexo" v-model="sexo" class="border rounded px-3 py-2 w-full sm:w-auto text-base sm:text-sm">
             <option value="">Todos</option>
             <option value="MASCULINO">Masculino</option>
             <option value="FEMININO">Feminino</option>
