@@ -42,20 +42,24 @@
             </svg>
           </button>
           <template v-if="showAdvanced">
-            <div class="flex gap-4 items-center">
-              <label class="font-medium flex items-center gap-1">
+            <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+              <label class="font-medium flex items-center gap-1 w-full sm:w-auto">
                 Data início:
                 <input
                   type="date"
                   v-model="filterStartDate"
-                  class="border rounded px-2 py-1 ml-2"
+                  class="border rounded px-2 py-1 ml-2 w-full sm:w-auto"
                 />
               </label>
-              <label class="font-medium flex items-center gap-1">
+              <label class="font-medium flex items-center gap-1 w-full sm:w-auto">
                 Data fim:
-                <input type="date" v-model="filterEndDate" class="border rounded px-2 py-1 ml-2" />
+                <input
+                  type="date"
+                  v-model="filterEndDate"
+                  class="border rounded px-2 py-1 ml-2 w-full sm:w-auto"
+                />
               </label>
-              <label class="font-medium flex items-center gap-1 ml-4">
+              <label class="font-medium flex items-center gap-1 ml-0 sm:ml-4 w-full sm:w-auto">
                 <input type="checkbox" v-model="onlyWithAttachment" class="accent-primary-600" />
                 Apenas com anexo
               </label>
