@@ -10,25 +10,26 @@
 
 Aplicação SPA desenvolvida em Vue 3 + Vite para gerenciamento e visualização de pessoas desaparecidas, com filtros avançados, responsividade e experiência moderna.
 
-## Passo a Passo para Instalação, Execução e Testes
 
-### 1. Pré-requisitos
+## Como executar localmente
+
+### 1. Usando Node.js (desenvolvimento)
 
 - Node.js 20+ (https://nodejs.org/)
 - npm 9+ (instalado junto com o Node)
 
-### 2. Instalação das Dependências
-
-No terminal, execute:
-
 ```sh
 npm install
-```
-
-### 3. Executando o Projeto em Modo Desenvolvimento
-
-```sh
 npm run dev
 ```
+Acesse o endereço exibido no terminal (normalmente http://localhost:5173).
 
-Acesse o endereço exibido no terminal (http://localhost:5173).
+### 2. Usando Docker (produção)
+
+```sh
+docker build -t spa-pessoas-desaparecidas .
+docker run -p 8080:80 spa-pessoas-desaparecidas
+```
+Acesse no navegador: http://localhost:8080
+
+O container utiliza Nginx para servir os arquivos otimizados do build, com boas práticas de cache, segurança e compressão. O arquivo `nginx.conf` já está configurado para funcionar com rotas do Vue Router (history mode).
