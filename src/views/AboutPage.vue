@@ -1,6 +1,6 @@
 <template>
   <main class="container mx-auto max-w-4xl p-6">
-    <h1 class="text-3xl font-extrabold mb-8 text-primary-700 text-center">
+    <h1 class="text-3xl font-extrabold mb-8 text-secondary-700 text-center">
       Sobre o Projeto: Frontend para Pessoas Desaparecidas na API da PJC-MT
     </h1>
 
@@ -47,10 +47,27 @@
       </ul>
     </section>
     <section class="p-6 bg-white rounded-lg shadow-md text-center">
-      <p class="text-neutral-700 leading-relaxed mb-2">
-        Este projeto demonstra proficiência em desenvolvimento front-end moderno, arquitetura de
-        software, integração com APIs e resolução proativa de problemas técnicos em um ambiente de
-        desenvolvimento dinâmico.
+      <h2 class="text-2xl font-bold mb-4 text-neutral-800 border-b pb-2 border-neutral-200">
+        Como executar e testar localmente
+      </h2>
+      <div class="mb-4 text-left text-neutral-700">
+        <strong>Modo desenvolvimento (Node.js):</strong>
+        <pre class="bg-neutral-100 rounded p-3 text-sm mt-2 mb-2">npm install
+npm run dev
+# Acesse http://localhost:5173</pre>
+        <strong>Modo produção (Docker):</strong>
+        <pre class="bg-neutral-100 rounded p-3 text-sm mt-2 mb-2">docker build -t spa-pessoas-desaparecidas .
+docker run -p 8080:80 spa-pessoas-desaparecidas
+# Acesse http://localhost:8080</pre>
+        O container utiliza Nginx para servir os arquivos otimizados do build, com cache, segurança e compressão. O arquivo <code>nginx.conf</code> já está configurado para funcionar com rotas do Vue Router (history mode).
+      </div>
+      <h2 class="text-2xl font-bold mb-4 text-neutral-800 border-b pb-2 border-neutral-200">
+        Agradecimentos
+      </h2>
+      <p class="text-neutral-700 leading-relaxed">
+        Agradeço a oportunidade de participar deste processo seletivo e contribuir com uma solução
+        que pode fazer a diferença na vida das pessoas. Estou à disposição para quaisquer dúvidas ou
+        discussões sobre o projeto.
       </p>
       <p class="text-neutral-500 text-sm mt-4">
         Desenvolvido por
